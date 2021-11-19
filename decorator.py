@@ -1,10 +1,15 @@
-def null_decorator(func):
-    return func
+def uppercase(func):
+    def wrapper():
+        original_result: str = func()
+        modified_result = original_result.upper()
+        return modified_result
+
+    return wrapper
 
 
-@null_decorator
+@uppercase
 def greet():
-    return 'Hello'
+    return 'hello'
 
 
-greet()
+print(greet())  # >>> HELLO
