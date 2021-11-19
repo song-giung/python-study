@@ -1,28 +1,31 @@
-def strong(func):
-    def wrapper():
-        return f'<strong>{func()}</strong>'
+import functools
+
+
+def proxy(func):
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
 
     return wrapper
 
 
-def emphasis(func):
-    def wrapper():
-        return f'<em>{func()}</em>'
+def trace(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f'TRACE: calling {func.__name__}() '
+              f'with {args}, {kwargs}')
+        original_result = func(*args, **kwargs)
+
+        print(f'TRACE: {func.__name__}() '
+              f'returned {original_result!r}')
+
+        return original_result
 
     return wrapper
 
 
-@strong  # 2
-@emphasis  # 1
-def greet():
-    return 'hello'
+@trace
+def say(name, line):
+    return f'{name}: {line}'
 
 
-def greet_with_no_decorator():
-    return 'hello'
-
-
-print(greet())  # <strong><em>hello</em></strong>
-
-decorated_greet = strong(emphasis(greet_with_no_decorator))
-print('no decorator : ' + decorated_greet())
+print(say('giung', 5))
