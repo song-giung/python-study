@@ -13,6 +13,7 @@ def greeting(userid):
     except KeyError:
         return 'Hi there'
 
+
 # default value
 def greeting_short(userid):
     return f'Hi {name_for_userid.get(userid, "there")}'
@@ -27,3 +28,23 @@ value_sorted_items = sorted(name_for_userid.items(), key=lambda x: x[1])
 # 자주 사용하는 key 함수는 operator에 구현되어 있다.
 sorted(name_for_userid.items(), key=operator.itemgetter(1))
 sorted(name_for_userid.items(), key=operator.attrgetter('value'))
+
+
+def dispatch_if(operator, x, y):
+    if operator == 'add':
+        return x + y
+    elif operator == 'sub':
+        return x - y
+    elif operator == 'mul':
+        return x * y
+    elif operator == 'div':
+        return x / y
+
+
+def dispatch_dict(operator, x, y):
+    return {
+        'add': lambda: x + y,
+        'sub': lambda: x - y,
+        'mul': lambda: x * y,
+        'div': lambda: x / y,
+    }.get(operator, lambda: None)()
