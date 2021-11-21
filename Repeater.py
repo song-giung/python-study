@@ -1,4 +1,19 @@
-iterator = ('Hello' for i in range(3)) # 제너레이텨 표현식
+def integers():
+    for i in range(10):
+        yield i
 
-for x in iterator:
+
+def squared(seq):
+    for x in seq:
+        yield x * x
+
+
+def negated(seq):
+    for x in seq:
+        yield -x
+
+
+chain = negated(squared(integers()))
+
+for x in chain:
     print(x)
