@@ -31,3 +31,11 @@ new_tuple = arr + (23,)  ## make copy
 arr = array.array('f', [1, 2, 3])
 arr.append(5)
 
+# set
+vowels = {'a', 'e', 'i', 'o', 'u'}
+# empty set
+empty_set = set()  # {} 는 dict 를 생성
+
+letters = set('alice')
+intersection = letters.intersection(vowels)
+print(intersection)
