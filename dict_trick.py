@@ -40,7 +40,8 @@ def dispatch_if(operator, x, y):
     elif operator == 'div':
         return x / y
 
-
+# 함수를 호출할 때 마다 임시 dict와 익명 함수가 생성 되어 비효율적이긴 하다.
+# 함수를 자주 호출 한다면 상수로 빼어 두는 것이 좋겠다.
 def dispatch_dict(operator, x, y):
     return {
         'add': lambda: x + y,
