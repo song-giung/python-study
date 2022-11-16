@@ -26,6 +26,6 @@ sites = [
         "http://olympus.realpython.org/dice",
     ] * 80
 start_time = time.time()
-asyncio.get_event_loop().run_until_complete(download_all_sites(sites))
+asyncio.run(download_all_sites(sites))
 duration = time.time() - start_time
 print(f"Downloaded {len(sites)} in {duration} seconds")
