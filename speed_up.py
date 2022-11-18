@@ -1,31 +1,30 @@
-# concurrency
-
-import asyncio
-import aiohttp
+import requests
+import multiprocessing
 import time
 
+session = None
 
-async def download_site(session, url: str):
-    async with session.get(url) as response:
-        print("Read {0} from {1}".format(response.content_length, url))
+def set_global_session():
+    global session
+    if not session:
+        session = requests.Session()
 
+    
+def download_site(url: str):
+    with session.get(url) as response:
+        name = multiprocessing.current_process().name
+        print(f"{name}:Read {len(response.content)} from {url}")
 
-async def download_all_sites(sites:list[str]):
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for url in sites:
-            task = asyncio.ensure_future(download_site(session, url))
-            tasks.append(task)
-        
-        await asyncio.gather(*tasks, return_exceptions=True)
-        
-
-
-sites = [
-        "https://www.jython.org",
-        "http://olympus.realpython.org/dice",
-    ] * 80
-start_time = time.time()
-asyncio.run(download_all_sites(sites))
-duration = time.time() - start_time
-print(f"Downloaded {len(sites)} in {duration} seconds")
+def download_all_sites(sites: list[str]):
+    with multiprocessing.Pool(initializer=set_global_session) as pool:
+        pool.map(download_site, sites)
+    
+if __name__ == "__main__":
+    sites = [
+            "https://www.jython.org",
+            "http://olympus.realpython.org/dice",
+        ] * 80
+    start_time = time.time()
+    download_all_sites(sites)
+    duration = time.time() - start_time
+    print(f"Downloaded {len(sites)} in {duration} seconds")
