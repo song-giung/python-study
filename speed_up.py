@@ -1,30 +1,23 @@
-import requests
-import multiprocessing
+# cpu bound
+
 import time
+import multiprocessing
 
-session = None
+def cpu_bound(number: int):
+    return sum(i * i for i in range(number))
 
-def set_global_session():
-    global session
-    if not session:
-        session = requests.Session()
-
-    
-def download_site(url: str):
-    with session.get(url) as response:
-        name = multiprocessing.current_process().name
-        print(f"{name}:Read {len(response.content)} from {url}")
-
-def download_all_sites(sites: list[str]):
-    with multiprocessing.Pool(initializer=set_global_session) as pool:
-        pool.map(download_site, sites)
+def find_sums(numbers: list[int]):
+    with multiprocessing.Pool() as pool:
+        pool.map(cpu_bound, numbers)
     
 if __name__ == "__main__":
-    sites = [
-            "https://www.jython.org",
-            "http://olympus.realpython.org/dice",
-        ] * 80
+    numbers = [5_000_000 + x for x in range(20)]
+
     start_time = time.time()
-    download_all_sites(sites)
-    duration = time.time() - start_time
-    print(f"Downloaded {len(sites)} in {duration} seconds")
+    find_sums(numbers)
+    duration =  time.time() - start_time
+    print(f"Duration {duration} seconds")
+
+
+# sync => 4 seconds
+# multiprocessing => 0.08 seconds
